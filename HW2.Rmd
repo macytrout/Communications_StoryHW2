@@ -18,7 +18,8 @@ output:
 knitr::opts_chunk$set(message = FALSE, warning = FALSE)
 ```
 
-```{r installling libraries, warning = FALSE, message = FALSE, echo = FALSE}
+```{r installling libraries, warning = FALSE, message = FALSE, echo = TRUE, results = "hide"}
+
 # tidycensus and load necessary libraries
 
 library(tidycensus)
@@ -33,7 +34,8 @@ census_api_key("bddd8495974eca2afb75bb773c01c741730d44a5", install = TRUE, overw
 
 ```
 
-```{r, warning = FALSE, message = FALSE, fig.show="hide", echo=FALSE}
+```{r, echo = TRUE, message = FALSE, warning = FALSE, results = "hide", fig.show="hide"}
+
 # get 2010 ACS data
 income_2010 <- get_acs(
   geography = "county",
@@ -90,7 +92,7 @@ land_area_data <- county_shapes %>%
 ```
 
 
-```{r, warning = FALSE, message = FALSE, fig.show="hide", echo=FALSE}
+```{r, warning = FALSE, message = FALSE, fig.show="hide", echo=TRUE}
 # merge population data with land area data using GEOID
 population_with_land_area <- left_join(population_data, land_area_data, by = "GEOID")
 
@@ -106,7 +108,7 @@ population_with_land_area <- population_with_land_area %>%
 income_data <- left_join(income_data, population_with_land_area, by = "GEOID")
 ```
 
-```{r, warning = FALSE, message = FALSE, include = FALSE}
+```{r, echo = TRUE, message = FALSE, warning = FALSE, results = "hide", fig.show="hide"} 
 # county boundaries
 county_shapes <- counties(cb = TRUE)
 
@@ -132,7 +134,7 @@ county_income_map <- county_income_map %>%
 ```
 # A Growing Divide: How Urban and Rural America Drifted Further Apart in a Decade
 
-Over the past decade, a silent yet profound transformation has swept across the United States. From 2010 to 2020, household incomes in counties across the country changed in ways that reveal a deepening divide—a divide that, if left unchecked, threatens to reshape the economic landscape of the nation for generations to come.
+Over the past decade, a silent yet profound transformation has swept across the United States. From 2010 to 2020, household incomes in counties across the country changed in ways that reveal a deepening divide and if left unchecked, threatens to reshape the economic landscape of the nation for generations to come.
 
 ## A Nation Divided by Income Growth
 
@@ -142,19 +144,17 @@ To understand this shift, we first turn to the map of income changes. This map p
 
 But this growth is not spread evenly. *Rural America tells a very different story.* Across much of the *Midwest* and *Southeast*, the map fades to *pale pink* and even *purple*—signifying income stagnation or, in some cases, outright decline. These counties, once the economic backbone of America’s agricultural and manufacturing industries, are being left behind.
 
-```{r, warning = FALSE, message = FALSE}
-# Refined ggplot map for income change with improved legend
+```{r, warning = FALSE, message = FALSE, fig.align='center'}
 ggplot(county_income_map) +
-  # Add county geometries with borders and fill based on income change
+
   geom_sf(aes(fill = income_change, geometry = geometry.y), color = "white", size = 0.1) +
-  
-  # Use a diverging color palette with midpoint at 0 (neutral change)
+
   scale_fill_gradient2(low = "blue", mid = "white", high = "red", midpoint = 0, 
                        name = "Income Change (%)", 
                        breaks = c(-20, 0, 20, 40, 60),  # Adjust to the data range
                        labels = c("-20%", "0%", "+20%", "+40%", "+60%")) +
   
-  # Improve labels, titles, and captions
+
   labs(
     title = "Percent Change in Median Household Income (2010-2020)",
     subtitle = "Comparing Urban and Rural Counties",
@@ -162,11 +162,11 @@ ggplot(county_income_map) +
     fill = "Income Change (%)"
   ) +
   
-  # Customize the theme with better font sizes, background, and legend position
+
   theme_minimal(base_size = 14) +
   
   theme(
-    plot.title = element_text(face = "bold", size = 14, hjust = 0.5),
+    plot.title = element_text(face = "bold", size = 12, hjust = 0.5),
     plot.title.position = "panel",
     plot.subtitle = element_text(face = "italic", size = 14, hjust = 0.5),
     plot.caption = element_text(size = 10, hjust = 0.95, face = "italic"),
@@ -174,15 +174,15 @@ ggplot(county_income_map) +
     axis.title = element_blank(),
     panel.grid = element_blank(),
     
-    # Adjust legend position and text
+   
     legend.position = "right",
     legend.title = element_text(size = 12, face = "bold"),
     legend.text = element_text(size = 10),
-    legend.key.height = unit(0.7, "cm"),  # Adjust the height of the legend keys
-    legend.key.width = unit(0.3, "cm")    # Adjust the width of the legend keys
+    legend.key.height = unit(0.7, "cm"),  
+    legend.key.width = unit(0.3, "cm")  
   ) +
   
-  # Add guide for continuous color bar (optional tweak for better legend appearance)
+  
   guides(fill = guide_colorbar(barwidth = 1.5, barheight = 7, title.position = "top", title.hjust = 0.5))
 
 ```
@@ -195,7 +195,7 @@ Urban Counties: The purple boxplot represents urban counties. Here, income growt
 
 Rural Counties: The orange boxplot, on the other hand, tells a more volatile story. While some rural counties have indeed seen income growth comparable to urban areas, the overall picture is much more erratic. Several rural counties have seen income plummet by up to 50%, while others have enjoyed unprecedented growth, with outliers showing increases of over 100%. This wild variability underscores the precariousness of rural economies, which are often more reliant on a single industry or sector.
 
-```{r, warning = FALSE, message = FALSE}
+```{r, warning = FALSE, message = FALSE, fig.align='center'}
 
 ggplot(income_data, aes(x = classification, y = income_change, fill = classification)) +
   geom_boxplot() +
@@ -221,7 +221,7 @@ The gap between urban and rural counties is not just a quirk of geography—it�
 
 *Urban Winners*: Counties along the West Coast and in parts of the Northeast stand out as the *clear winners* of the past decade, enjoying income growth that outpaces much of the country. These areas are thriving, propelled forward by industries that are future-facing, adaptable, and resistant to economic downturns.
 
-*Rural Losers*: Conversely, many rural counties have found themselves on the losing end of this shift. As global forces push toward urbanization and tech-based economies, rural areas have struggled to find their footing. The boxplot’s outliers—those rural counties with steep income declines—serve as a stark reminder that some regions are falling behind, unable to compete in the evolving economic landscape.
+*Rural Losers*: Conversely, many rural counties have found themselves on the losing end of this shift. As global forces push toward urbanization and tech-based economies, rural areas have struggled to find their footing. The boxplot’s outliers, those rural counties with steep income declines, serve as a stark reminder that some regions are falling behind, unable to compete in the evolving economic landscape.
 
 ## The Consequences of a Divided Economy
 
